@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Neon Snake — A cyberpunk arcade snake game" />
+  <title>Neon-Snake</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
+
+  <div id="app">
+
+    <header>
+      <h1 class="logo">NEON<span>SNAKE</span></h1>
+      <div class="header-stats">
+        <div class="stat">
+          <span class="stat-label">SCORE</span>
+          <span class="stat-value" id="score-display">000000</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">BEST</span>
+          <span class="stat-value" id="best-display">000000</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">LEVEL</span>
+          <span class="stat-value" id="level-display">01</span>
+        </div>
+      </div>
+    </header>
+
+    <div id="canvas-wrapper">
+      <canvas id="game-canvas"></canvas>
+
+      <div id="screen-start" class="overlay active">
+        <div class="overlay-content">
+          <div class="glitch-text" data-text="NEON SNAKE">NEON SNAKE</div>
+          <p class="sub">CYBERPUNK ARCADE</p>
+          <div class="key-hints">
+            <div class="hint"><kbd>W A S D</kbd> or <kbd>↑ ← ↓ →</kbd> to move</div>
+            <div class="hint"><kbd>P</kbd> to pause</div>
+          </div>
+          <button id="btn-start" class="btn-primary">INSERT COIN</button>
+        </div>
+      </div>
+
+      <div id="screen-paused" class="overlay">
+        <div class="overlay-content">
+          <div class="overlay-title">PAUSED</div>
+          <button id="btn-resume" class="btn-primary">RESUME</button>
+          <button id="btn-restart-pause" class="btn-secondary">RESTART</button>
+        </div>
+      </div>
+
+      <div id="screen-gameover" class="overlay">
+        <div class="overlay-content">
+          <div class="overlay-title glitch-red" data-text="GAME OVER">GAME OVER</div>
+          <div class="final-score-block">
+            <span class="stat-label">FINAL SCORE</span>
+            <span class="final-score-value" id="final-score">000000</span>
+          </div>
+          <div id="new-best-badge" class="new-best hidden">NEW BEST!</div>
+          <button id="btn-restart" class="btn-primary">PLAY AGAIN</button>
+        </div>
+      </div>
+
+    </div>
+
+    <footer>
+      <span>USE WASD OR ARROW KEYS &nbsp;|&nbsp; P TO PAUSE &nbsp;|&nbsp; ESC TO RESTART</span>
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
