@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Neon Snake — A cyberpunk arcade snake game" />
-  <title>Neon-Snake</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Neon Snake — A cyberpunk arcade snake game. Classic gameplay with a high-contrast neon aesthetic." />
+  <meta name="theme-color" content="#020408" />
+  <meta property="og:title" content="Neon Snake" />
+  <meta property="og:description" content="Cyberpunk arcade snake game" />
+  <title>Neon Snake</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,8 +15,8 @@
 </head>
 <body>
 
-  <div class="scanlines"></div>
-  <div class="vignette"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
 
   <div id="app">
 
@@ -29,51 +32,79 @@
           <span class="stat-value" id="best-display">000000</span>
         </div>
         <div class="stat">
-          <span class="stat-label">LEVEL</span>
+          <span class="stat-label">LVL</span>
           <span class="stat-value" id="level-display">01</span>
         </div>
       </div>
     </header>
 
     <div id="canvas-wrapper">
-      <canvas id="game-canvas"></canvas>
+      <canvas id="game-canvas" role="img" aria-label="Neon Snake game board"></canvas>
 
-      <div id="screen-start" class="overlay active">
+      <div id="screen-start" class="overlay active" role="dialog" aria-modal="true" aria-label="Start screen">
         <div class="overlay-content">
           <div class="glitch-text" data-text="NEON SNAKE">NEON SNAKE</div>
-          <p class="sub">CYBERPUNK ARCADE</p>
+          <p class="overlay-sub">CYBERPUNK ARCADE</p>
           <div class="key-hints">
-            <div class="hint"><kbd>W A S D</kbd> or <kbd>↑ ← ↓ →</kbd> to move</div>
-            <div class="hint"><kbd>P</kbd> to pause</div>
+            <div class="hint"><kbd>W A S D</kbd> or <kbd>ARROWS</kbd> &nbsp;move</div>
+            <div class="hint"><kbd>P</kbd> pause &nbsp;&nbsp; <kbd>ESC</kbd> restart</div>
+          </div>
+          <div class="legend">
+            <div class="legend-item"><span class="dot dot-food"></span>Food — 10pt per level</div>
+            <div class="legend-item"><span class="dot dot-special"></span>Bonus — 50pt per level</div>
           </div>
           <button id="btn-start" class="btn-primary">INSERT COIN</button>
         </div>
       </div>
 
-      <div id="screen-paused" class="overlay">
+      <div id="screen-paused" class="overlay" role="dialog" aria-modal="true" aria-label="Paused">
         <div class="overlay-content">
           <div class="overlay-title">PAUSED</div>
           <button id="btn-resume" class="btn-primary">RESUME</button>
-          <button id="btn-restart-pause" class="btn-secondary">RESTART</button>
+          <button id="btn-restart-pause" class="btn-ghost">RESTART</button>
         </div>
       </div>
 
-      <div id="screen-gameover" class="overlay">
+      <div id="screen-gameover" class="overlay" role="dialog" aria-modal="true" aria-label="Game over">
         <div class="overlay-content">
           <div class="overlay-title glitch-red" data-text="GAME OVER">GAME OVER</div>
-          <div class="final-score-block">
+          <div class="score-reveal">
             <span class="stat-label">FINAL SCORE</span>
             <span class="final-score-value" id="final-score">000000</span>
           </div>
-          <div id="new-best-badge" class="new-best hidden">NEW BEST!</div>
+          <div id="new-best-badge" class="new-best hidden">NEW RECORD</div>
           <button id="btn-restart" class="btn-primary">PLAY AGAIN</button>
         </div>
       </div>
 
     </div>
 
+    <div id="touch-controls" aria-label="Mobile directional controls">
+      <div class="touch-row">
+        <button class="touch-btn" id="touch-up" aria-label="Up">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+        </button>
+      </div>
+      <div class="touch-row">
+        <button class="touch-btn" id="touch-left" aria-label="Left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="touch-btn touch-center" id="touch-pause" aria-label="Pause">
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        </button>
+        <button class="touch-btn" id="touch-right" aria-label="Right">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <div class="touch-row">
+        <button class="touch-btn" id="touch-down" aria-label="Down">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+    </div>
+
     <footer>
-      <span>USE WASD OR ARROW KEYS &nbsp;|&nbsp; P TO PAUSE &nbsp;|&nbsp; ESC TO RESTART</span>
+      <span class="footer-text">WASD / ARROWS &nbsp;&mdash;&nbsp; P PAUSE &nbsp;&mdash;&nbsp; ESC RESTART</span>
     </footer>
 
   </div>
