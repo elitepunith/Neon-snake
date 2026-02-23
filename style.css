@@ -5,16 +5,16 @@
 }
 
 :root {
-  --green:       #00ff9f;
-  --green-dim:   #00cc7a;
-  --pink:        #ff2d78;
-  --blue:        #00d4ff;
-  --yellow:      #ffe44d;
-  --bg:          #020408;
-  --bg-surface:  #060d14;
-  --bg-overlay:  rgba(2, 4, 8, 0.94);
-  --text-muted:  rgba(0, 255, 159, 0.35);
-  --border:      rgba(0, 255, 159, 0.12);
+  --green:      #00ff9f;
+  --green-dim:  #00cc7a;
+  --pink:       #ff2d78;
+  --blue:       #00d4ff;
+  --yellow:     #ffe44d;
+  --bg:         #020408;
+  --bg-surface: #060d14;
+  --bg-overlay: rgba(2, 4, 8, 0.94);
+  --text-muted: rgba(0, 255, 159, 0.35);
+  --border:     rgba(0, 255, 159, 0.12);
 
   --glow-green:  0 0 8px rgba(0,255,159,0.8), 0 0 24px rgba(0,255,159,0.3);
   --glow-pink:   0 0 8px rgba(255,45,120,0.8), 0 0 24px rgba(255,45,120,0.3);
@@ -35,7 +35,7 @@ body {
   touch-action: none;
 }
 
-/* CRT effects */
+/* ── CRT overlay ─────────────────────────────────────────────────────────── */
 
 .scanlines {
   position: fixed;
@@ -44,8 +44,8 @@ body {
     0deg,
     transparent,
     transparent 2px,
-    rgba(0,0,0,0.12) 2px,
-    rgba(0,0,0,0.12) 4px
+    rgba(0,0,0,0.11) 2px,
+    rgba(0,0,0,0.11) 4px
   );
   pointer-events: none;
   z-index: 200;
@@ -54,12 +54,12 @@ body {
 .vignette {
   position: fixed;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.9) 100%);
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.88) 100%);
   pointer-events: none;
   z-index: 199;
 }
 
-/* Layout */
+/* ── App layout ──────────────────────────────────────────────────────────── */
 
 #app {
   display: flex;
@@ -71,7 +71,7 @@ body {
   gap: 8px;
 }
 
-/* Header */
+/* ── Header ──────────────────────────────────────────────────────────────── */
 
 header {
   width: 100%;
@@ -125,7 +125,7 @@ header {
   letter-spacing: 0.04em;
 }
 
-/* Canvas wrapper */
+/* ── Canvas ──────────────────────────────────────────────────────────────── */
 
 #canvas-wrapper {
   position: relative;
@@ -139,13 +139,12 @@ header {
   box-shadow:
     0 0 0 1px rgba(0,255,159,0.04),
     0 0 40px rgba(0,255,159,0.06),
-    0 0 80px rgba(0,255,159,0.03),
     inset 0 0 40px rgba(0,0,0,0.6);
   background: var(--bg-surface);
   image-rendering: pixelated;
 }
 
-/* Overlays */
+/* ── Overlays ────────────────────────────────────────────────────────────── */
 
 .overlay {
   position: absolute;
@@ -169,9 +168,16 @@ header {
   gap: clamp(12px, 2.5vh, 20px);
   text-align: center;
   padding: 20px;
+  width: 100%;
 }
 
-/* Glitch title */
+/* ── Glitch title ────────────────────────────────────────────────────────── */
+
+/*
+  The ::before and ::after pseudo-elements are absolutely positioned colored
+  copies of the text. Without opacity:0 as a base, they bleed through between
+  animation cycles causing the "text on top of text" artifact.
+*/
 
 .glitch-text {
   font-family: 'Orbitron', sans-serif;
@@ -191,6 +197,8 @@ header {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  opacity: 0;    /* must be here — animations override this; without it the
+                    copies are always visible on top of the real text */
 }
 
 .glitch-text::before {
@@ -209,25 +217,26 @@ header {
 
 @keyframes glitch-idle {
   0%, 88%, 100% { transform: translate(0); }
-  90%            { transform: translate(-3px, 0); }
-  92%            { transform: translate(3px, 0); }
-  94%            { transform: translate(-1px, 0); }
-  96%            { transform: translate(0); }
+  90%           { transform: translate(-3px, 0); }
+  92%           { transform: translate(3px, 0); }
+  94%           { transform: translate(-1px, 0); }
 }
 
 @keyframes glitch-layer-a {
   0%, 88%, 100% { opacity: 0; transform: translate(0); }
   90%           { opacity: 1; transform: translate(4px, -1px); }
   92%           { opacity: 1; transform: translate(-4px, 1px); }
-  94%           { opacity: 0; }
+  94%           { opacity: 0; transform: translate(0); }
 }
 
 @keyframes glitch-layer-b {
   0%, 88%, 100% { opacity: 0; transform: translate(0); }
   90%           { opacity: 1; transform: translate(-4px, 1px); }
   92%           { opacity: 1; transform: translate(4px, -1px); }
-  94%           { opacity: 0; }
+  94%           { opacity: 0; transform: translate(0); }
 }
+
+/* Game Over title uses pink as the base color */
 
 .glitch-red {
   color: var(--pink);
@@ -261,7 +270,7 @@ header {
   text-shadow: var(--glow-pink);
 }
 
-/* Key hints */
+/* ── Key hints ───────────────────────────────────────────────────────────── */
 
 .key-hints {
   display: flex;
@@ -281,7 +290,7 @@ header {
 
 kbd {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 0.68em;
+  font-size: 0.9em;
   padding: 2px 7px;
   border: 1px solid rgba(0,255,159,0.22);
   border-bottom-width: 2px;
@@ -290,7 +299,7 @@ kbd {
   background: rgba(0,255,159,0.06);
 }
 
-/* Legend */
+/* ── Legend ──────────────────────────────────────────────────────────────── */
 
 .legend {
   display: flex;
@@ -326,7 +335,7 @@ kbd {
   transform: rotate(45deg);
 }
 
-/* Buttons */
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
 
 .btn-primary {
   font-family: 'Orbitron', sans-serif;
@@ -339,10 +348,11 @@ kbd {
   border: 2px solid var(--green);
   cursor: pointer;
   text-transform: uppercase;
-  transition: background 0.15s, color 0.15s, box-shadow 0.15s, transform 0.1s;
-  box-shadow: var(--glow-green);
   position: relative;
   overflow: hidden;
+  transition: color 0.15s, box-shadow 0.15s, transform 0.1s;
+  box-shadow: var(--glow-green);
+  isolation: isolate;
 }
 
 .btn-primary::before {
@@ -353,7 +363,7 @@ kbd {
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.18s ease;
-  z-index: 0;
+  z-index: -1;
 }
 
 .btn-primary:hover::before,
@@ -366,12 +376,6 @@ kbd {
   color: var(--bg);
   box-shadow: var(--glow-green), 0 0 50px rgba(0,255,159,0.4);
   outline: none;
-}
-
-.btn-primary span,
-.btn-primary {
-  position: relative;
-  z-index: 1;
 }
 
 .btn-primary:active {
@@ -403,7 +407,7 @@ kbd {
   transform: scale(0.96);
 }
 
-/* Score reveal */
+/* ── Score reveal ────────────────────────────────────────────────────────── */
 
 .score-reveal {
   display: flex;
@@ -440,7 +444,7 @@ kbd {
 }
 
 @keyframes pulse-badge {
-  from { opacity: 0.65; transform: scale(0.97); box-shadow: none; }
+  from { opacity: 0.65; transform: scale(0.97); }
   to   { opacity: 1;    transform: scale(1.04); box-shadow: var(--glow-pink); }
 }
 
@@ -448,7 +452,7 @@ kbd {
   display: none !important;
 }
 
-/* Touch controls */
+/* ── Touch controls ──────────────────────────────────────────────────────── */
 
 #touch-controls {
   display: none;
@@ -475,14 +479,14 @@ kbd {
   justify-content: center;
   cursor: pointer;
   border-radius: 4px;
-  transition: background 0.1s, box-shadow 0.1s;
-  -webkit-tap-highlight-color: transparent;
+  transition: background 0.08s, box-shadow 0.08s;
   user-select: none;
 }
 
 .touch-btn svg {
   width: 22px;
   height: 22px;
+  pointer-events: none;
 }
 
 .touch-btn:active,
@@ -503,7 +507,7 @@ kbd {
   box-shadow: var(--glow-pink);
 }
 
-/* Footer */
+/* ── Footer ──────────────────────────────────────────────────────────────── */
 
 footer {
   flex-shrink: 0;
@@ -515,50 +519,37 @@ footer {
   color: rgba(0,255,159,0.18);
 }
 
-/* Mobile: show touch controls, adjust layout */
-
-@media (max-width: 600px), (max-height: 700px) and (pointer: coarse) {
-  body {
-    overflow: hidden;
-  }
-
-  #app {
-    padding: 8px 12px;
-    gap: 6px;
-  }
-
-  .key-hints {
-    display: none;
-  }
-
-  footer {
-    display: none;
-  }
-
-  #touch-controls {
-    display: flex;
-  }
-}
+/* ── Responsive ──────────────────────────────────────────────────────────── */
 
 @media (hover: none) and (pointer: coarse) {
   #touch-controls {
     display: flex;
   }
 
-  footer {
+  footer,
+  .key-hints {
     display: none;
   }
+}
 
+@media (max-width: 480px) {
+  #app {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  #touch-controls {
+    display: flex;
+  }
+
+  footer,
   .key-hints {
     display: none;
   }
 }
 
 @media (max-height: 580px) {
-  .legend {
-    display: none;
-  }
-
+  .legend,
   .overlay-sub {
     display: none;
   }
