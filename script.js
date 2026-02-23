@@ -180,7 +180,8 @@ const game = {
   snake:       [],
   dir:         DIR.RIGHT,
   nextDir:     DIR.RIGHT,
-  dirName:     'RIGHT',
+  dirName:     'RIGHT',   // actual direction the snake is currently moving
+  pendingName: null,      // direction queued since last tick, not yet applied
   food:        null,
   special:     null,
   specialLife: 0,
@@ -234,10 +235,11 @@ function lerp(a, b, t) {
 function initSnake() {
   const mx = Math.floor(COLS / 2);
   const my = Math.floor(ROWS / 2);
-  game.snake   = [ {x: mx, y: my}, {x: mx - 1, y: my}, {x: mx - 2, y: my} ];
-  game.dir     = DIR.RIGHT;
-  game.nextDir = DIR.RIGHT;
-  game.dirName = 'RIGHT';
+  game.snake       = [ {x: mx, y: my}, {x: mx - 1, y: my}, {x: mx - 2, y: my} ];
+  game.dir         = DIR.RIGHT;
+  game.nextDir     = DIR.RIGHT;
+  game.dirName     = 'RIGHT';
+  game.pendingName = null;
 }
 
 function startGame() {
@@ -268,6 +270,17 @@ function startGame() {
 
 function tick() {
   if (game.state !== 'running') return;
+
+  // Apply the direction queued since the last tick.
+  // We validate here against game.dirName (actual current movement) as a
+  // final safety net — this catches rapid double-presses that slipped through.
+  if (game.pendingName) {
+    if (game.pendingName !== OPPOSITE[game.dirName]) {
+      game.nextDir = DIR[game.pendingName];
+      game.dirName = game.pendingName;
+    }
+    game.pendingName = null;
+  }
 
   game.dir = game.nextDir;
 
@@ -392,10 +405,17 @@ function resume() {
 
 function changeDir(name) {
   if (game.state !== 'running') return;
-  if (name === OPPOSITE[game.dirName]) return;
-  if (name === game.dirName) return;
-  game.nextDir = DIR[name];
-  game.dirName = name;
+
+  // Validate against whatever direction the snake will actually be moving
+  // when this input is applied. If a turn is already pending this tick, the
+  // snake will have taken that turn by the time this one is processed, so
+  // check against pendingName first. Falls back to the real current direction.
+  const checkAgainst = game.pendingName || game.dirName;
+
+  if (name === OPPOSITE[checkAgainst]) return;  // would drive straight into body
+  if (name === checkAgainst) return;            // same direction, ignore
+
+  game.pendingName = name;
   audio.turn();
 }
 
@@ -580,7 +600,7 @@ document.addEventListener('keydown', function(e) {
       break;
     case ' ': case 'Enter':
       e.preventDefault();
-      if (game.state === 'idle') startGame();
+      if (game.state === 'idle' || game.state === 'dead') startGame();
       break;
   }
 });
