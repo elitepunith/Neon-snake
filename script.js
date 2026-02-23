@@ -193,6 +193,7 @@ const game = {
   state:       'idle',    // 'idle' | 'running' | 'paused' | 'dead'
   loopId:      null,
   rafId:       null,
+  deathTimer:  null,      // setTimeout handle from die() — must be cancelled on restart
   flash:       0,
   deathFlash:  0
 };
@@ -244,6 +245,8 @@ function initSnake() {
 
 function startGame() {
   clearInterval(game.loopId);
+  clearTimeout(game.deathTimer);
+  game.deathTimer = null;
 
   game.score       = 0;
   game.level       = 1;
@@ -383,7 +386,7 @@ function die() {
   const badge = document.getElementById('new-best-badge');
   isNewBest ? badge.classList.remove('hidden') : badge.classList.add('hidden');
 
-  setTimeout(() => showScreen('gameover'), 850);
+  game.deathTimer = setTimeout(() => showScreen('gameover'), 850);
 }
 
 function pause() {
@@ -584,23 +587,42 @@ function render() {
 document.addEventListener('keydown', function(e) {
   const dir = KEY_MAP[e.key];
 
-  if (dir) {
-    if (e.key.startsWith('Arrow')) e.preventDefault();
-    changeDir(dir);
-    if (game.state === 'idle') startGame();
-    return;
-  }
+  // Always block arrow keys from scrolling the page
+  if (e.key.startsWith('Arrow')) e.preventDefault();
 
-  switch (e.key) {
-    case 'p': case 'P':
-      pause();
+  switch (game.state) {
+
+    case 'idle':
+      if (dir || e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        startGame();
+      }
       break;
-    case 'Escape':
-      if (game.state === 'running' || game.state === 'paused') startGame();
+
+    case 'running':
+      if (dir) {
+        changeDir(dir);
+      } else if (e.key === 'p' || e.key === 'P') {
+        pause();
+      } else if (e.key === 'Escape') {
+        startGame();
+      }
       break;
-    case ' ': case 'Enter':
-      e.preventDefault();
-      if (game.state === 'idle' || game.state === 'dead') startGame();
+
+    case 'paused':
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'p' || e.key === 'P') {
+        e.preventDefault();
+        resume();
+      } else if (e.key === 'Escape') {
+        startGame();
+      }
+      break;
+
+    case 'dead':
+      if (dir || e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+        e.preventDefault();
+        startGame();
+      }
       break;
   }
 });
@@ -621,15 +643,28 @@ canvas.addEventListener('touchend', function(e) {
   if (swipeX === null) return;
   const dx = e.changedTouches[0].clientX - swipeX;
   const dy = e.changedTouches[0].clientY - swipeY;
-  if (Math.max(Math.abs(dx), Math.abs(dy)) < 12) { swipeX = null; return; }
-  if (Math.abs(dx) > Math.abs(dy)) {
-    changeDir(dx > 0 ? 'RIGHT' : 'LEFT');
-  } else {
-    changeDir(dy > 0 ? 'DOWN' : 'UP');
-  }
-  if (game.state === 'idle') startGame();
   swipeX = null;
   swipeY = null;
+
+  const dist = Math.max(Math.abs(dx), Math.abs(dy));
+
+  if (game.state === 'idle' || game.state === 'dead') {
+    if (dist >= 12) startGame();
+    return;
+  }
+
+  if (game.state === 'paused') {
+    if (dist >= 12) resume();
+    return;
+  }
+
+  if (game.state === 'running' && dist >= 12) {
+    if (Math.abs(dx) > Math.abs(dy)) {
+      changeDir(dx > 0 ? 'RIGHT' : 'LEFT');
+    } else {
+      changeDir(dy > 0 ? 'DOWN' : 'UP');
+    }
+  }
 }, { passive: false });
 
 // ─── D-pad buttons ────────────────────────────────────────────────────────────
