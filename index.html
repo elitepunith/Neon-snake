@@ -3,10 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <meta name="description" content="Neon Snake — A cyberpunk arcade snake game. Classic gameplay with a high-contrast neon aesthetic." />
+  <meta name="description" content="Neon Snake — Cyberpunk arcade snake game" />
   <meta name="theme-color" content="#020408" />
-  <meta property="og:title" content="Neon Snake" />
-  <meta property="og:description" content="Cyberpunk arcade snake game" />
   <title>Neon Snake</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,7 +14,7 @@
 <body>
 
   <div class="scanlines" aria-hidden="true"></div>
-  <div class="vignette" aria-hidden="true"></div>
+  <div class="vignette"  aria-hidden="true"></div>
 
   <div id="app">
 
@@ -39,38 +37,41 @@
     </header>
 
     <div id="canvas-wrapper">
-      <canvas id="game-canvas" role="img" aria-label="Neon Snake game board"></canvas>
+      <canvas id="game-canvas" aria-label="Neon Snake game board"></canvas>
 
-      <div id="screen-start" class="overlay active" role="dialog" aria-modal="true" aria-label="Start screen">
+      <!-- Start screen -->
+      <div id="screen-start" class="overlay active">
         <div class="overlay-content">
           <div class="glitch-text" data-text="NEON SNAKE">NEON SNAKE</div>
           <p class="overlay-sub">CYBERPUNK ARCADE</p>
           <div class="key-hints">
-            <div class="hint"><kbd>W A S D</kbd> or <kbd>ARROWS</kbd> &nbsp;move</div>
-            <div class="hint"><kbd>P</kbd> pause &nbsp;&nbsp; <kbd>ESC</kbd> restart</div>
+            <div class="hint"><kbd>W A S D</kbd> or <kbd>ARROWS</kbd> &nbsp;— move</div>
+            <div class="hint"><kbd>P</kbd> pause &nbsp;&nbsp;<kbd>ESC</kbd> restart</div>
           </div>
           <div class="legend">
-            <div class="legend-item"><span class="dot dot-food"></span>Food — 10pt per level</div>
-            <div class="legend-item"><span class="dot dot-special"></span>Bonus — 50pt per level</div>
+            <span class="legend-item"><i class="dot dot-food"></i>Food — 10pt × level</span>
+            <span class="legend-item"><i class="dot dot-special"></i>Bonus — 50pt × level</span>
           </div>
           <button id="btn-start" class="btn-primary">INSERT COIN</button>
         </div>
       </div>
 
-      <div id="screen-paused" class="overlay" role="dialog" aria-modal="true" aria-label="Paused">
+      <!-- Paused screen -->
+      <div id="screen-paused" class="overlay">
         <div class="overlay-content">
-          <div class="overlay-title">PAUSED</div>
+          <p class="overlay-title">PAUSED</p>
           <button id="btn-resume" class="btn-primary">RESUME</button>
           <button id="btn-restart-pause" class="btn-ghost">RESTART</button>
         </div>
       </div>
 
-      <div id="screen-gameover" class="overlay" role="dialog" aria-modal="true" aria-label="Game over">
+      <!-- Game over screen -->
+      <div id="screen-gameover" class="overlay">
         <div class="overlay-content">
-          <div class="overlay-title glitch-red" data-text="GAME OVER">GAME OVER</div>
-          <div class="score-reveal">
-            <span class="stat-label">FINAL SCORE</span>
-            <span class="final-score-value" id="final-score">000000</span>
+          <p class="overlay-title gameover-title" data-text="GAME OVER">GAME OVER</p>
+          <div class="score-block">
+            <span class="score-label">FINAL SCORE</span>
+            <span class="score-number" id="final-score">000000</span>
           </div>
           <div id="new-best-badge" class="new-best hidden">NEW RECORD</div>
           <button id="btn-restart" class="btn-primary">PLAY AGAIN</button>
@@ -79,32 +80,33 @@
 
     </div>
 
-    <div id="touch-controls" aria-label="Mobile directional controls">
-      <div class="touch-row">
-        <button class="touch-btn" id="touch-up" aria-label="Up">
+    <!-- Mobile D-pad -->
+    <div id="touch-controls">
+      <div class="dpad-row">
+        <button class="dpad-btn" id="touch-up" aria-label="Up">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
         </button>
       </div>
-      <div class="touch-row">
-        <button class="touch-btn" id="touch-left" aria-label="Left">
+      <div class="dpad-row">
+        <button class="dpad-btn" id="touch-left" aria-label="Left">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <button class="touch-btn touch-center" id="touch-pause" aria-label="Pause">
-          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        <button class="dpad-btn dpad-center" id="touch-pause" aria-label="Pause">
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="4" height="16" rx="1"/><rect x="15" y="4" width="4" height="16" rx="1"/></svg>
         </button>
-        <button class="touch-btn" id="touch-right" aria-label="Right">
+        <button class="dpad-btn" id="touch-right" aria-label="Right">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
-      <div class="touch-row">
-        <button class="touch-btn" id="touch-down" aria-label="Down">
+      <div class="dpad-row">
+        <button class="dpad-btn" id="touch-down" aria-label="Down">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
       </div>
     </div>
 
     <footer>
-      <span class="footer-text">WASD / ARROWS &nbsp;&mdash;&nbsp; P PAUSE &nbsp;&mdash;&nbsp; ESC RESTART</span>
+      <span>WASD / ARROWS &nbsp;—&nbsp; P PAUSE &nbsp;—&nbsp; ESC RESTART</span>
     </footer>
 
   </div>

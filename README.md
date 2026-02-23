@@ -1,6 +1,6 @@
 # Neon Snake
 
-A cyberpunk arcade snake game. Vanilla HTML, CSS, and JavaScript — no build step, no dependencies.
+Cyberpunk arcade snake. Vanilla HTML, CSS, JavaScript — no build step, no dependencies.
 
 ---
 
@@ -8,10 +8,7 @@ A cyberpunk arcade snake game. Vanilla HTML, CSS, and JavaScript — no build st
 
 | Input | Action |
 |---|---|
-| W / Arrow Up | Move up |
-| S / Arrow Down | Move down |
-| A / Arrow Left | Move left |
-| D / Arrow Right | Move right |
+| W A S D / Arrows | Move |
 | P | Pause / Resume |
 | ESC | Restart |
 | Swipe / D-pad | Move (mobile) |
@@ -22,20 +19,18 @@ A cyberpunk arcade snake game. Vanilla HTML, CSS, and JavaScript — no build st
 
 | Item | Points |
 |---|---|
-| Food (pink dot) | Level x 10 |
-| Bonus (yellow square) | Level x 50 |
+| Food (pink) | Level × 10 |
+| Bonus (yellow) | Level × 50 |
 
-Speed and score multiplier increase every few pickups across 10 levels. Bonus items expire if ignored.
+10 levels of increasing speed. Bonus items expire if not collected in time.
 
 ---
 
 ## Run locally
 
 ```bash
-# No build needed — open directly
 open index.html
-
-# Or with any static server
+# or
 npx serve .
 ```
 
@@ -45,23 +40,23 @@ npx serve .
 
 **Gameplay**
 - Wall mode — lethal borders instead of wrap-around
-- Ghost power-up — pass through your own body once
+- Ghost power-up — pass through body once
+- Daily challenge with seeded food layout
 - Two-player on the same keyboard
-- Seeded daily challenge
 
-**Polish**
+**Feel**
 - Screen shake on death via canvas transform
-- Connected rounded body segments instead of squares
-- Dynamic background hue shift per level
-- Haptic feedback on mobile via Vibration API
+- Rounded connected body segments instead of squares
+- Haptic feedback on mobile via `navigator.vibrate()`
+- Background hue shift per level
 
 **Persistence**
-- Top-10 leaderboard with initials stored in localStorage
+- Local top-10 leaderboard with initials
 - Share score as plain text
 
 **Accessibility**
-- Reduce-motion mode (disables glitch and particles)
-- Color-blind palette option
+- Reduce-motion mode (disables glitch + particles)
+- Color-blind friendly palette toggle
 
 ---
 
