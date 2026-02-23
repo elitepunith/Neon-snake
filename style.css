@@ -433,6 +433,22 @@ kbd {
   transform: scale(0.96);
 }
 
+/* Arrow-key focused state on pause menu */
+.btn-primary.menu-focus {
+  color: var(--bg);
+  box-shadow: var(--glow-green), 0 0 60px rgba(0,255,159,0.35);
+}
+
+.btn-primary.menu-focus::before {
+  transform: scaleX(1);
+}
+
+.btn-ghost.menu-focus {
+  color: var(--green);
+  border-color: rgba(0,255,159,0.4);
+  box-shadow: 0 0 8px rgba(0,255,159,0.3);
+}
+
 .btn-ghost {
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(0.6rem, 1.8vw, 0.73rem);

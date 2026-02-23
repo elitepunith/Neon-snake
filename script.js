@@ -191,6 +191,7 @@ const game = {
   eaten:       0,
   tickMs:      120,
   state:       'idle',    // 'idle' | 'running' | 'paused' | 'dead'
+  menuFocus:   0,         // index of focused button on paused screen: 0=resume 1=restart
   loopId:      null,
   rafId:       null,
   deathTimer:  null,      // setTimeout handle from die() — must be cancelled on restart
@@ -214,6 +215,23 @@ function showScreen(name) {
     const el = document.getElementById('screen-' + name);
     if (el) el.classList.add('active');
   }
+}
+
+// The paused screen has two buttons. This tracks and renders which one
+// is keyboard-focused so arrow keys can select between them.
+const PAUSE_BTNS = ['btn-resume', 'btn-restart-pause'];
+
+function setMenuFocus(index) {
+  game.menuFocus = index;
+  PAUSE_BTNS.forEach(function(id, i) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (i === index) {
+      el.classList.add('menu-focus');
+    } else {
+      el.classList.remove('menu-focus');
+    }
+  });
 }
 
 function randomCell(exclude) {
@@ -393,6 +411,7 @@ function pause() {
   if (game.state === 'running') {
     game.state = 'paused';
     clearInterval(game.loopId);
+    setMenuFocus(0);
     showScreen('paused');
   } else if (game.state === 'paused') {
     resume();
@@ -610,8 +629,18 @@ document.addEventListener('keydown', function(e) {
       break;
 
     case 'paused':
-      if (e.key === 'Enter' || e.key === ' ' || e.key === 'p' || e.key === 'P') {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'w' || e.key === 'W') {
+        setMenuFocus(0);
+      } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 's' || e.key === 'S') {
+        setMenuFocus(1);
+      } else if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
+        if (game.menuFocus === 0) {
+          resume();
+        } else {
+          startGame();
+        }
+      } else if (e.key === 'p' || e.key === 'P') {
         resume();
       } else if (e.key === 'Escape') {
         startGame();
